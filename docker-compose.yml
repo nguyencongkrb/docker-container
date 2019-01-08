@@ -31,3 +31,13 @@ services:
         - "127.0.0.1:${MYSQL_PORT}:3306"
       networks:
         - backend
+
+### MongoDB ##############################################
+    mongo:
+      build: ./mongo
+      volumes:
+        - ${DATA_PATH_HOST}/mongo:/data/db
+      ports:
+        - "127.0.0.1:${MONGODB_PORT}:27017"
+      networks:
+        - backend
