@@ -1,43 +1,33 @@
-version: '3'
-
-networks:
-  frontend:
-    driver: ${NETWORKS_DRIVER}
-  backend:
-    driver: ${NETWORKS_DRIVER}
+version: '3.3'
 
 volumes:
   mysql:
-    driver: ${VOLUMES_DRIVER}
+  mongo:  
 
 services:
 
 ### MySQL ################################################
-    mysql:
-      build:
-        context: ./mysql
-        args:
-          - MYSQL_VERSION=${MYSQL_VERSION}
-      environment:
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - TZ=${WORKSPACE_TIMEZONE}
-      volumes:
-        - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
-        - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
-      ports:
-        - "127.0.0.1:${MYSQL_PORT}:3306"
-      networks:
-        - backend
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${WORKSPACE_TIMEZONE}
+    volumes:
+      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
+      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+      - ${MYSQL_CONFIG}:/etc/mysql/conf.d/my.cnf
+    ports:
+      - '127.0.0.1:${MYSQL_PORT}:3306'  
 
 ### MongoDB ##############################################
-    mongo:
-      build: ./mongo
-      volumes:
-        - ${DATA_PATH_HOST}/mongo:/data/db
-      ports:
-        - "127.0.0.1:${MONGODB_PORT}:27017"
-      networks:
-        - backend
+  mongo:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - ${DATA_PATH_HOST}/mongo:/data/db
+    ports:
+      - "127.0.0.1:${MONGODB_PORT}:27017"
