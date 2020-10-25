@@ -5,7 +5,6 @@ volumes:
   mongo:  
 
 services:
-
 ### MySQL ################################################
   mysql:
     image: mysql:5.7
@@ -17,7 +16,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - TZ=${WORKSPACE_TIMEZONE}
     volumes:
-      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
+      - ${DATA_PATH_HOST}/mysql-data:/var/lib/mysql
       - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
       - ${MYSQL_CONFIG}:/etc/mysql/conf.d/my.cnf
     ports:
@@ -28,6 +27,10 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - ${DATA_PATH_HOST}/mongo:/data/db
+      - ${DATA_PATH_HOST}/mongo-data:/data/db
     ports:
       - "127.0.0.1:${MONGODB_PORT}:27017"
+
+volumes:
+  mysql-data:
+  mongo-data:
