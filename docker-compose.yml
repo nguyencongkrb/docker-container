@@ -14,10 +14,7 @@ volumes:
 services:
 ### MySQL ################################################
   mysql:
-    build:
-      context: ./mysql
-      args:
-        - MYSQL_VERSION=5.7
+    build: ./mysql
     environment:
       - MYSQL_DATABASE=default
       - MYSQL_USER=default
