@@ -32,5 +32,5 @@ docker stop mysql
 
 ## ssh to mysql service
 ```
-docker exex -it docker-container_mysql_1 /bin/bash
+docker exex -it docker-container_mysql_1 bash
 ```
