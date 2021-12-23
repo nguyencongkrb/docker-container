@@ -26,9 +26,23 @@ services:
       - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
-      - '127.0.0.1:3306:3306'  
+      - '3306:3306'  
     networks:
-      - backend  
+      - backend
+###  Postgres ### 
+  postgres:
+    build: ./postgres
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=default
+      - POSTGRES_USER=default
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - backend
 ### MongoDB ###############################################
   mongo:
     build: ./mongo
@@ -36,7 +50,7 @@ services:
       - ./data/mongo-data:/data/db
       - ./mongo/mongo-config:/data/configdb
     ports:
-      - "127.0.0.1:27017:27017"
+      - '27017:27017'
     networks:
       - backend  
 ### Redis ################################################
@@ -45,6 +59,6 @@ services:
     volumes:
       - ./data/redis-data:/data
     ports:
-      - "127.0.0.1:6379:6379"
+      - '6379:6379'
     networks:
       - backend  
