@@ -3,16 +3,9 @@ version: '3.5'
 networks:
   backend:
     driver: bridge
-volumes:
-  mysql:
-    driver: local
-  mongo:
-    driver: local
-  redis:
-    driver: local
 
 services:
-### MySQL ################################################
+### MySQL ###
   mysql:
     build: ./mysql
     environment:
@@ -43,7 +36,7 @@ services:
       - POSTGRES_PASSWORD=secret
     networks:
       - backend
-### MongoDB ###############################################
+### MongoDB ###
   mongo:
     build: ./mongo
     volumes:
@@ -53,7 +46,7 @@ services:
       - '27017:27017'
     networks:
       - backend  
-### Redis ################################################
+### Redis ###
   redis:
     build: ./redis
     volumes:
