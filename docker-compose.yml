@@ -8,6 +8,7 @@ services:
 ### MySQL ###
   mysql:
     build: ./mysql
+    container_name: docker-mysql
     environment:
       - MYSQL_DATABASE=default
       - MYSQL_USER=default
@@ -25,6 +26,7 @@ services:
 ###  Postgres ### 
   postgres:
     build: ./postgres
+    container_name: docker-postgres
     volumes:
       - ./data/postgres-data:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -39,6 +41,7 @@ services:
 ### MongoDB ###
   mongo:
     build: ./mongo
+    container_name: docker-mongo
     volumes:
       - ./data/mongo-data:/data/db
       - ./mongo/mongo-config:/data/configdb
@@ -49,6 +52,7 @@ services:
 ### Redis ###
   redis:
     build: ./redis
+    container_name: docker-redis
     volumes:
       - ./data/redis-data:/data
     ports:
