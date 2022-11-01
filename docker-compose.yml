@@ -25,6 +25,7 @@ services:
       - '3306:3306'  
     networks:
       - backend
+    restart: always  
 ###  Postgres ### 
   postgres:
     build: ./postgres
