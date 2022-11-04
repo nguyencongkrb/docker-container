@@ -4,6 +4,15 @@ networks:
   backend:
     driver: bridge
 
+volumes:
+  mysql:
+    driver: ${VOLUMES_DRIVER}
+  postgres:
+    driver: ${VOLUMES_DRIVER}
+  mongo:
+    driver: ${VOLUMES_DRIVER}
+  redis:
+    driver: ${VOLUMES_DRIVER}
 services:
 ### MySQL ###
   mysql:
@@ -18,7 +27,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - TZ=UTC
     volumes:
-      - ./data/mysql-data:/var/lib/mysql
+      - ${DATA_PATH_HOST}/mysql-data:/var/lib/mysql
       - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
@@ -31,7 +40,7 @@ services:
     build: ./postgres
     container_name: docker-postgres
     volumes:
-      - ./data/postgres-data:/var/lib/postgresql/data
+      - ${DATA_PATH_HOST}/postgres-data:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
@@ -46,8 +55,8 @@ services:
     build: ./mongo
     container_name: docker-mongo
     volumes:
-      - ./data/mongo-data:/data/db
-      - ./mongo/mongo-config:/data/configdb
+      - ${DATA_PATH_HOST}/mongo-data:/data/db
+      - ${DATA_PATH_HOST}/mongo-config:/data/configdb
     ports:
       - '27017:27017'
     networks:
@@ -58,7 +67,7 @@ services:
     build: ./redis
     container_name: docker-redis
     volumes:
-      - ./data/redis-data:/data
+      - ${DATA_PATH_HOST}/redis-data:/data
     ports:
       - '6379:6379'
     networks:
