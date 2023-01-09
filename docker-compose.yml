@@ -16,6 +16,7 @@ volumes:
 services:
 ### MySQL ###
   mysql:
+    platform: 'linux/x86_64' # fix M1
     build: ./mysql
     container_name: docker-mysql
     command:
@@ -37,6 +38,7 @@ services:
     restart: always  
 ###  Postgres ### 
   postgres:
+    platform: 'linux/x86_64' # fix M1
     build: ./postgres
     container_name: docker-postgres
     volumes:
@@ -52,6 +54,7 @@ services:
       - backend
 ### MongoDB ###
   mongo:
+    platform: 'linux/x86_64' # fix M1
     build: ./mongo
     container_name: docker-mongo
     volumes:
@@ -64,6 +67,7 @@ services:
     restart: always    
 ### Redis ###
   redis:
+    platform: 'linux/x86_64' # fix M1
     build: ./redis
     container_name: docker-redis
     volumes:
