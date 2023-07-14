@@ -38,7 +38,8 @@ services:
     restart: always  
 ###  Postgres ### 
   postgres:
-    platform: 'linux/x86_64' # fix M1
+    # platform: 'linux/x86_64' # fix M1
+    image: 'arm64v8/postgres:alpine'
     build: ./postgres
     container_name: docker-postgres
     volumes:
@@ -54,7 +55,8 @@ services:
       - backend
 ### MongoDB ###
   mongo:
-    platform: 'linux/x86_64' # fix M1
+    # platform: 'linux/x86_64' # fix M1
+    image: 'arm64v8/mongo:3.6.22'
     build: ./mongo
     container_name: docker-mongo
     volumes:
@@ -67,7 +69,8 @@ services:
     restart: always    
 ### Redis ###
   redis:
-    platform: 'linux/x86_64' # fix M1
+    # platform: 'linux/x86_64' # fix M1
+    image: 'arm64v8/redis'
     build: ./redis
     container_name: docker-redis
     volumes:

@@ -1,5 +1,5 @@
 
-FROM mongo:3.6.22
+FROM arm64v8/mongo:3.6.22
 
 LABEL maintainer="Cong Nguyen <nguyencongkrb@gmail.com>"
 
