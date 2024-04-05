@@ -16,8 +16,8 @@ volumes:
 services:
 ### MySQL ###
   mysql:
-    platform: 'linux/amd64' # fix M1
-    #image: 'arm64v8/mysql' # Change to arm64v8 --> myql8
+    #platform: 'linux/amd64' # fix M1
+    image: 'arm64v8/mysql' # Change to arm64v8 --> myql8
     build: ./mysql
     container_name: docker-mysql
     command:
