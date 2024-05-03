@@ -1,5 +1,10 @@
 # docker-container
 
+## change config
+```
+DATA_PATH_HOST of the .env file
+```
+
 ## run
 ```
 docker-compose up -d
