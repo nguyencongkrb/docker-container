@@ -1,6 +1,5 @@
-#ARG MYSQL_VERSION=5.7
-#FROM mysql:${MYSQL_VERSION}
-FROM arm64v8/mysql
+ARG MYSQL_VERSION=8.4
+FROM arm64v8/mysql:${MYSQL_VERSION}
 
 LABEL maintainer="Cong Nguyen <nguyencongkrb@gmail.com>"
 

@@ -1,5 +1,4 @@
-ARG POSTGRES_VERSION=alpine
-FROM arm64v8/postgres:${POSTGRES_VERSION}
+FROM arm64v8/postgres:alpine
 
 LABEL maintainer="Cong Nguyen <nguyencongkrb@gmail.com>"
 
