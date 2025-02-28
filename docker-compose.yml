@@ -40,13 +40,13 @@ services:
     build: ./postgres
     container_name: docker-postgres
     volumes:
-      - ${DATA_PATH_HOST}/postgres-data:/var/lib/postgresql/data
+      - ${DATA_PATH_HOST}/pgdata:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
     environment:
       - POSTGRES_DB=default
-      - POSTGRES_USER=default
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secret
     networks:
       - backend
@@ -80,7 +80,7 @@ services:
 ###  dev notification ### 
   notification:
     platform: 'linux/amd64' # fix chip ARM
-    image: '633592184768.dkr.ecr.ap-southeast-2.amazonaws.com/we_notification:develop'
+    image: 'we_notification'
     build: ./notification
     container_name: docker-notification
     ports:
