@@ -1,3 +1,5 @@
+version: "3.9"
+
 networks:
   backend:
     driver: bridge
@@ -11,85 +13,92 @@ volumes:
     driver: ${VOLUMES_DRIVER}
   redis:
     driver: ${VOLUMES_DRIVER}
+  kafka:
+    driver: ${VOLUMES_DRIVER}
+
 services:
-### MySQL ###
+  ### MySQL ###
   mysql:
-    image: 'arm64v8/mysql:8.4' # Change to arm64v8 --> mysql8
-    build: ./mysql
+    image: arm64v8/mysql:8.4
     container_name: docker-mysql
-    command:
-      mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES UTF8;' --group_concat_max_len=5120
+    command: >
+      mysqld --character-set-server=utf8mb4
+             --collation-server=utf8mb4_unicode_ci
+             --init-connect='SET NAMES UTF8;'
+             --group_concat_max_len=5120
     environment:
-      - MYSQL_DATABASE=default
-      - MYSQL_USER=default
-      - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_PASSWORD=root
-      - TZ=UTC
+      MYSQL_DATABASE: default
+      MYSQL_USER: default
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+      TZ: UTC
     volumes:
       - ${DATA_PATH_HOST}/mysql-data:/var/lib/mysql
       - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
-      - '3306:3306'  
+      - "3306:3306"
     networks:
       - backend
-    restart: always  
-###  Postgres ### 
+    restart: always
+
+  ### Postgres ###
   postgres:
-    image: 'arm64v8/postgres:alpine'
-    build: ./postgres
+    image: arm64v8/postgres:16
     container_name: docker-postgres
+    environment:
+      POSTGRES_DB: default
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
     volumes:
       - ${DATA_PATH_HOST}/pgdata:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_DB=default
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=secret
+      - "5432:5432"
     networks:
       - backend
-### MongoDB ###
+    restart: always
+
+  ### MongoDB ###
   mongo:
-    image: 'arm64v8/mongo:3.6.22'
-    build: ./mongo
+    image: arm64v8/mongo:3.6.22
     container_name: docker-mongo
     volumes:
       - ${DATA_PATH_HOST}/mongo-data:/data/db
       - ./mongo/mongo-config:/data/configdb
     ports:
-      - '27017:27017'
+      - "27017:27017"
     networks:
       - backend
-    restart: always    
-### Redis ###
+    restart: always
+
+  ### Redis ###
   redis:
-    image: 'arm64v8/redis'
-    build: ./redis
+    image: arm64v8/redis
     container_name: docker-redis
     volumes:
       - ${DATA_PATH_HOST}/redis-data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
-      - '6379:6379'
+      - "6379:6379"
     networks:
       - backend
     restart: always
-###  kafka cluster  ###   
+
+  ### Kafka ###
   kafka:
-    image: bitnami/kafka:3.6.1
+    image: bitnami/kafka:latest
     container_name: kafka
     ports:
-      - "9192:9092" # broker port
-      - "9193:9094" # Controller port
+      - "9192:9092" # broker
+      - "9193:9094" # external
     environment:
       - KAFKA_ENABLE_KRAFT=yes
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
       - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://192.168.1.39:9193 # update ip address
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9094,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://192.168.1.39:9193
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
@@ -101,7 +110,9 @@ services:
       - ${DATA_PATH_HOST}/kafka-data:/bitnami/kafka
     networks:
       - backend
-###  kafka UI  ###
+    restart: always
+
+  ### Kafka UI ###
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
@@ -110,33 +121,34 @@ services:
     environment:
       - KAFKA_CLUSTERS_0_NAME=cluster-0
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - DYNAMIC_CONFIG_ENABLED='true'
+      - DYNAMIC_CONFIG_ENABLED=true
     depends_on:
       - kafka
     networks:
       - backend
-###  dev notification ### 
+
+  ### Notification ###
   notification:
-    platform: 'linux/amd64' # fix chip ARM
-    image: 'we_notification'
+    platform: linux/amd64
+    image: we_notification
     build: ./notification
     container_name: docker-notification
     ports:
-      - '1337:1337'
+      - "1337:1337"
     environment:
-      - OAUTH_URI=https://auth-dev.wewumbo.io
-      - OAUTH_CHECK_LOGIN=/api/v1/user/check-login
-      - CLIENT_ID=1_ug1mmhlvphc4gw8w0s48wc0w880kosoc844cgw8gw84kcwwg4
-      - CLIENT_SECRET=x1jv3rtdufkcssk0sckkkkwwook808go8ckcg0wkgc48wk0wo
-      - API_URI=https://rest-dev.wewumbo.io
-      - API_GET_INFO=/v1/user/info
-      - CC_API_URI=https://ccapi-dev.wewumbo.io
-      - CC_API_GET_INFO=/api/cc/invitations/info
-      - MONGO_HOST=docker-mongo
-      - MONGO_DB=dev_notification
-      - REDIS_PREFIX=wedev_
-      - REDIS_HOST=docker-redis
-      - FIREBASE_SERVER_KEY=AIzaSyCzS0EW9dSWKXnDURNihLW21j9fd5Av0eQ
+      OAUTH_URI: https://auth-dev.wewumbo.io
+      OAUTH_CHECK_LOGIN: /api/v1/user/check-login
+      CLIENT_ID: 1_ug1mmhlvphc4gw8w0s48wc0w880kosoc844cgw8gw84kcwwg4
+      CLIENT_SECRET: x1jv3rtdufkcssk0sckkkkwwook808go8ckcg0wkgc48wk0wo
+      API_URI: https://rest-dev.wewumbo.io
+      API_GET_INFO: /v1/user/info
+      CC_API_URI: https://ccapi-dev.wewumbo.io
+      CC_API_GET_INFO: /api/cc/invitations/info
+      MONGO_HOST: docker-mongo
+      MONGO_DB: dev_notification
+      REDIS_PREFIX: wedev_
+      REDIS_HOST: docker-redis
+      FIREBASE_SERVER_KEY: AIzaSyCzS0EW9dSWKXnDURNihLW21j9fd5Av0eQ
     networks:
       - backend
     extra_hosts:
