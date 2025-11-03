@@ -125,6 +125,21 @@ services:
     networks:
       - backend
 
+  ### RabbitMQ ###
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: docker-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: secret
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ${DATA_PATH_HOST}/rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - backend    
+
   ### Notification ###
   notification:
     platform: linux/amd64
