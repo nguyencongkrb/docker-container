@@ -58,7 +58,7 @@ services:
     networks:
       - backend
 
-  ### MongoDB ###
+  ### MongoDB v3 ###
   mongo:
     image: arm64v8/mongo:3.6.22
     container_name: docker-mongo
@@ -71,6 +71,18 @@ services:
       - backend
     restart: always
 
+  ### MongoDB v7 ###
+  mongo_v7:
+    image: arm64v8/mongo:7.0.5
+    container_name: docker-mongo-v7
+    volumes:
+      - ${DATA_PATH_HOST}/mongo-data-v7:/data/db
+      - ./mongo-v7/mongo-config:/data/configdb
+    ports:
+      - "27018:27017"
+    networks:
+      - backend
+    restart: always
   ### Redis ###
   redis:
     image: arm64v8/redis:8.4-alpine
