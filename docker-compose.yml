@@ -163,5 +163,4 @@ services:
       - backend
     extra_hosts:
       - rest-dev.wewumbo.io:host-gateway
-      - auth-dev.wewumbo.io:host-gateway
       - ccapi-dev.wewumbo.io:host-gateway
