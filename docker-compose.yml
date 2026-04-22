@@ -164,3 +164,25 @@ services:
     extra_hosts:
       - rest-dev.wewumbo.io:host-gateway
       - ccapi-dev.wewumbo.io:host-gateway
+
+  ### we_api_v2 ###
+  # docker compose build --no-cache --pull we_api_v2
+  we_api_v2:
+    build:
+      context: ${WE_PROJECT_PATH_HOST}/we_api_v2
+      dockerfile: Dockerfile-local
+    image: we-api-v2:latest
+    ports:
+      - "8004:80"
+    volumes:
+      - ${WE_PROJECT_PATH_HOST}/we_api_v2:/var/www
+    working_dir: /var/www
+    depends_on:
+      - mysql
+      - redis
+      - mongo_v7
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - backend
+    restart: unless-stopped
