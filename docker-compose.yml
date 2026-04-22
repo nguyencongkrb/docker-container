@@ -146,8 +146,8 @@ services:
     ports:
       - "1337:1337"
     environment:
-      OAUTH_URI: https://auth-dev.wewumbo.io
-      OAUTH_CHECK_LOGIN: /api/v1/user/check-login
+      OAUTH_URI: https://rest-dev.wewumbo.io
+      OAUTH_CHECK_LOGIN: /auth/v2/user/check-login
       CLIENT_ID: 1_ug1mmhlvphc4gw8w0s48wc0w880kosoc844cgw8gw84kcwwg4
       CLIENT_SECRET: x1jv3rtdufkcssk0sckkkkwwook808go8ckcg0wkgc48wk0wo
       API_URI: https://rest-dev.wewumbo.io
