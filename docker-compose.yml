@@ -1,4 +1,4 @@
-version: "3.9"
+# version: "3.9"
 
 networks:
   backend:
@@ -60,19 +60,6 @@ services:
     networks:
       - backend
 
-  ### MongoDB v3 ###
-  mongo:
-    image: arm64v8/mongo:3.6.22
-    container_name: docker-mongo
-    volumes:
-      - ${DATA_PATH_HOST}/mongo-data:/data/db
-      - ./mongo/mongo-config:/data/configdb
-    ports:
-      - "27017:27017"
-    networks:
-      - backend
-    restart: always
-
   ### MongoDB v7 ###
   mongo_v7:
     image: arm64v8/mongo:7.0.5
@@ -81,7 +68,7 @@ services:
       - ${DATA_PATH_HOST}/mongo-data-v7:/data/db
       - ./mongo-v7/mongo-config:/data/configdb
     ports:
-      - "27018:27017"
+      - "27017:27017"
     networks:
       - backend
     restart: always
@@ -99,45 +86,45 @@ services:
     restart: always
 
   ### Kafka ###
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: kafka
-    ports:
-      - "9092:9092" # broker
-      - "9094:9094" # external
-    environment:
-      - KAFKA_ENABLE_KRAFT=yes
-      - KAFKA_CFG_PROCESS_ROLES=broker,controller
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://192.168.1.39:9094
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    volumes:
-      - ${DATA_PATH_HOST}/kafka-data:/bitnami/kafka
-    networks:
-      - backend
+  # kafka:
+  #   image: bitnami/kafka:latest
+  #   container_name: kafka
+  #   ports:
+  #     - "9092:9092" # broker
+  #     - "9094:9094" # external
+  #   environment:
+  #     - KAFKA_ENABLE_KRAFT=yes
+  #     - KAFKA_CFG_PROCESS_ROLES=broker,controller
+  #     - KAFKA_CFG_NODE_ID=1
+  #     - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+  #     - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://192.168.1.39:9094
+  #     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+  #     - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+  #     - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+  #     - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+  #     - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+  #     - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #   volumes:
+  #     - ${DATA_PATH_HOST}/kafka-data:/bitnami/kafka
+  #   networks:
+  #     - backend
 
   ### Kafka UI ###
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui
-    ports:
-      - "8039:8080"
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=cluster-0
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - DYNAMIC_CONFIG_ENABLED=true
-    depends_on:
-      - kafka
-    networks:
-      - backend
+  # kafka-ui:
+  #   image: provectuslabs/kafka-ui:latest
+  #   container_name: kafka-ui
+  #   ports:
+  #     - "8039:8080"
+  #   environment:
+  #     - KAFKA_CLUSTERS_0_NAME=cluster-0
+  #     - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+  #     - DYNAMIC_CONFIG_ENABLED=true
+  #   depends_on:
+  #     - kafka
+  #   networks:
+  #     - backend
 
   ### RabbitMQ ###
   rabbitmq:
@@ -156,9 +143,7 @@ services:
 
   ### Notification ###
   notification:
-    platform: linux/amd64
-    image: we_notification
-    build: ./notification
+    image: we_notification:latest
     container_name: docker-notification
     ports:
       - "1337:1337"
@@ -168,10 +153,10 @@ services:
       CLIENT_ID: 1_ug1mmhlvphc4gw8w0s48wc0w880kosoc844cgw8gw84kcwwg4
       CLIENT_SECRET: x1jv3rtdufkcssk0sckkkkwwook808go8ckcg0wkgc48wk0wo
       API_URI: https://rest-dev.wewumbo.io
-      API_GET_INFO: /v1/user/info
+      API_GET_INFO: /v2/user/info
       CC_API_URI: https://ccapi-dev.wewumbo.io
       CC_API_GET_INFO: /api/cc/invitations/info
-      MONGO_HOST: docker-mongo
+      MONGO_HOST: docker-mongo-v7
       MONGO_DB: dev_notification
       REDIS_PREFIX: wedev_
       REDIS_HOST: docker-redis
