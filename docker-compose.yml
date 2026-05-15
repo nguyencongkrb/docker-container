@@ -166,7 +166,8 @@ services:
       - ccapi-dev.wewumbo.io:host-gateway
 
   ### we_api_v2 ###
-  # docker compose build --no-cache --pull we_api_v2
+  # Run the first time: docker compose build --no-cache --pull we_api_v2
+  # docker compose up -d we_api_v2
   we_api_v2:
     build:
       context: ${WE_PROJECT_PATH_HOST}/we_api_v2
@@ -188,7 +189,6 @@ services:
     restart: unless-stopped
 
   ### we_command_centre_api ###
-  # docker compose build --no-cache --pull we_command_centre_api
   we_command_centre_api:
     build:
       context: ${WE_PROJECT_PATH_HOST}/we_command_centre_api
@@ -211,7 +211,6 @@ services:
     restart: unless-stopped
 
   ### pulsebpi_api ###
-  # docker compose build --no-cache --pull pulsebpi_api
   pulsebpi_api:
     build:
       context: ${WE_PROJECT_PATH_HOST}/pulsebpi_api
