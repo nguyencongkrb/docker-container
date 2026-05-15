@@ -186,3 +186,48 @@ services:
     networks:
       - backend
     restart: unless-stopped
+
+  ### we_command_centre_api ###
+  # docker compose build --no-cache --pull we_command_centre_api
+  we_command_centre_api:
+    build:
+      context: ${WE_PROJECT_PATH_HOST}/we_command_centre_api
+      dockerfile: Dockerfile-local
+    image: we-api-v2:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - ${WE_PROJECT_PATH_HOST}/we_command_centre_api:/var/www
+    working_dir: /var/www
+    depends_on:
+      - mysql
+      - redis
+      - mongo_v7
+    extra_hosts:
+      - rest-dev.wewumbo.io:host-gateway
+      - auth-dev.wewumbo.io:host-gateway
+    networks:
+      - backend
+    restart: unless-stopped
+
+  ### pulsebpi_api ###
+  # docker compose build --no-cache --pull pulsebpi_api
+  pulsebpi_api:
+    build:
+      context: ${WE_PROJECT_PATH_HOST}/pulsebpi_api
+      dockerfile: Dockerfile-local
+    image: we-api-v2:latest
+    ports:
+      - "8001:80"
+    volumes:
+      - ${WE_PROJECT_PATH_HOST}/pulsebpi_api:/var/www
+    working_dir: /var/www
+    depends_on:
+      - mysql
+      - redis
+      - mongo_v7
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - backend
+    restart: unless-stopped     
