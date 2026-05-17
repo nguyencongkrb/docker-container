@@ -4,18 +4,6 @@ networks:
   backend:
     driver: bridge
 
-volumes:
-  mysql:
-    driver: ${VOLUMES_DRIVER}
-  postgres:
-    driver: ${VOLUMES_DRIVER}
-  mongo-v7:
-    driver: ${VOLUMES_DRIVER}  
-  redis:
-    driver: ${VOLUMES_DRIVER}
-  kafka:
-    driver: ${VOLUMES_DRIVER}
-
 services:
   ### MySQL ###
   mysql:
@@ -171,9 +159,6 @@ services:
   # Run the first time: docker compose build --no-cache --pull we_api_v2
   # docker compose up -d we_api_v2
   we_api_v2:
-    build:
-      context: ${WE_PROJECT_PATH_HOST}/we_api_v2
-      dockerfile: Dockerfile-local
     image: php84_octane:latest
     container_name: we-api-v2
     ports:
@@ -193,9 +178,6 @@ services:
 
   ### we_command_centre_api ###
   we_command_centre_api:
-    build:
-      context: ${WE_PROJECT_PATH_HOST}/we_command_centre_api
-      dockerfile: Dockerfile-local
     image: php84_octane:latest
     container_name: we-command-centre-api
     ports:
@@ -216,9 +198,6 @@ services:
 
   ### pulsebpi_api ###
   pulsebpi_api:
-    build:
-      context: ${WE_PROJECT_PATH_HOST}/pulsebpi_api
-      dockerfile: Dockerfile-local
     image: php84_octane:latest
     container_name: pulsebpi-api
     ports:
