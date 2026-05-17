@@ -172,7 +172,7 @@ services:
     build:
       context: ${WE_PROJECT_PATH_HOST}/we_api_v2
       dockerfile: Dockerfile-local
-    image: we-api-v2:latest
+    image: php84_octane:latest
     ports:
       - "8004:80"
     volumes:
@@ -193,7 +193,7 @@ services:
     build:
       context: ${WE_PROJECT_PATH_HOST}/we_command_centre_api
       dockerfile: Dockerfile-local
-    image: we-api-v2:latest
+    image: php84_octane:latest
     ports:
       - "8000:80"
     volumes:
@@ -215,7 +215,7 @@ services:
     build:
       context: ${WE_PROJECT_PATH_HOST}/pulsebpi_api
       dockerfile: Dockerfile-local
-    image: we-api-v2:latest
+    image: php84_octane:latest
     ports:
       - "8001:80"
     volumes:
