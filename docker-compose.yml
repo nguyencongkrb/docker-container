@@ -139,10 +139,12 @@ services:
     networks:
       - backend    
 
-  ### Notification ###
-  notification:
-    image: we_notification:latest
-    container_name: docker-notification
+  ### we_notification_v2 ###
+  we_notification_v2:
+    build:
+      context: ${WE_PROJECT_PATH_HOST}/we_notification_v2
+      dockerfile: Dockerfile_local
+    image: node20:latest
     ports:
       - "1337:1337"
     environment:
