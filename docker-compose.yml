@@ -172,6 +172,8 @@ services:
       - mongo_v7
     extra_hosts:
       - "notification-dev.wewumbo.io:host-gateway"
+      - "payment-gateway-dev.wewumbo.io:host-gateway"
+      - "wsapi-dev.wewumbo.io:host-gateway"
       - "host.docker.internal:host-gateway"
     networks:
       - backend
