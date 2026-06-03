@@ -175,7 +175,7 @@ services:
     image: php84_octane:latest
     container_name: we-api-v2
     ports:
-      - "8004:80"
+      - "8004:8000"
     volumes:
       - ${WE_PROJECT_PATH_HOST}/we_api_v2:/var/www
     working_dir: /var/www
@@ -197,7 +197,7 @@ services:
     image: php84_octane:latest
     container_name: we-command-centre-api
     ports:
-      - "8000:80"
+      - "8000:8000"
     volumes:
       - ${WE_PROJECT_PATH_HOST}/we_command_centre_api:/var/www
     working_dir: /var/www
@@ -217,7 +217,7 @@ services:
     image: php84_octane:latest
     container_name: pulsebpi-api
     ports:
-      - "8001:80"
+      - "8001:8000"
     volumes:
       - ${WE_PROJECT_PATH_HOST}/pulsebpi_api:/var/www
     working_dir: /var/www
