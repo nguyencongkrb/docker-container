@@ -172,7 +172,7 @@ services:
   # Run the first time: docker compose build --no-cache --pull we_api_v2
   # docker compose up -d we_api_v2
   we_api_v2:
-    image: php84_octane:latest
+    image: php84-swoole:latest
     container_name: we-api-v2
     ports:
       - "8004:8000"
@@ -194,7 +194,7 @@ services:
 
   ### we_command_centre_api ###
   we_command_centre_api:
-    image: php84_octane:latest
+    image: php84-swoole:latest
     container_name: we-command-centre-api
     ports:
       - "8000:8000"
@@ -214,7 +214,7 @@ services:
 
   ### pulsebpi_api ###
   pulsebpi_api:
-    image: php84_octane:latest
+    image: php84-swoole:latest
     container_name: pulsebpi-api
     ports:
       - "8001:8000"
